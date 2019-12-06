@@ -16,7 +16,7 @@
 // Copyright (c) 2009 The Go Authors. All rights reserved.
 // See the NOTICE file for more details.
 TEXT ·Now(SB), 7, $16
-	MOVQ runtime·__vdso_clock_gettime_sym(SB), AX
+	MOVQ runtime·vdsoClockgettimeSym(SB), AX
 	MOVL $1, DI                                   // CLOCK_MONOTONIC
 	LEAQ 0(SP), SI
 	CALL AX
