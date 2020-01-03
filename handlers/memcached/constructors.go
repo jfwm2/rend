@@ -21,6 +21,7 @@ import (
 	"github.com/netflix/rend/handlers"
 	"github.com/netflix/rend/handlers/memcached/batched"
 	"github.com/netflix/rend/handlers/memcached/chunked"
+	"github.com/netflix/rend/handlers/memcached/cluster"
 	"github.com/netflix/rend/handlers/memcached/std"
 )
 
@@ -63,5 +64,15 @@ func Chunked(sock string) handlers.HandlerConst {
 func Batched(sock string, opts batched.Opts) handlers.HandlerConst {
 	return func() (handlers.Handler, error) {
 		return batched.NewHandler(sock, opts), nil
+	}
+}
+
+// Cluster returns an implementation of the Handler interface that implements
+// an interaction with a cluster of memcached instances. Ketama consistent hashing
+// is used in order to spread keys across instances.
+// TODO: Maybe add an RF parameter, for now only 1 replica is written to the cluster
+func Cluster(nodeAddresses []string, clusterName string) handlers.HandlerConst{
+	return func() (handlers.Handler, error) {
+		return cluster.NewHandler(nodeAddresses, clusterName)
 	}
 }
