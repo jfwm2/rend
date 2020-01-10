@@ -52,7 +52,7 @@ func simpleCmdLocal(rw *bufio.ReadWriter) error {
 	return err
 }
 
-func getLocal(rw *bufio.ReadWriter, readExp bool) (data []byte, flags, exp uint32, err error) {
+func GetLocal(rw *bufio.ReadWriter, readExp bool) (data []byte, flags, exp uint32, err error) {
 	if err := rw.Flush(); err != nil {
 		return nil, 0, 0, err
 	}

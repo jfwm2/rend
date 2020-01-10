@@ -9,9 +9,9 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/netflix/rend/handlers"
 	"github.com/netflix/rend/handlers/cassandra"
 	"github.com/netflix/rend/orcas"
-	"github.com/netflix/rend/handlers"
 	"github.com/netflix/rend/protocol"
 	"github.com/netflix/rend/protocol/binprot"
 	"github.com/netflix/rend/protocol/textprot"

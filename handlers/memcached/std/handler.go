@@ -40,7 +40,7 @@ func readResponseHeader(r *bufio.Reader) (*binprot.ResponseHeader, error) {
 
 // Handler implements a backend for Rend that communicates to a remote memcached server
 type Handler struct {
-	rw   *bufio.ReadWriter
+	Rw   *bufio.ReadWriter
 	conn io.Closer
 }
 
@@ -49,7 +49,7 @@ type Handler struct {
 func NewHandler(conn io.ReadWriteCloser) Handler {
 	rw := bufio.NewReadWriter(bufio.NewReader(conn), bufio.NewWriter(conn))
 	return Handler{
-		rw:   rw,
+		Rw:   rw,
 		conn: conn,
 	}
 }
@@ -62,7 +62,7 @@ func (h Handler) Close() error {
 
 // Set performs a set request on the remote backend
 func (h Handler) Set(cmd common.SetRequest) error {
-	if err := binprot.WriteSetCmd(h.rw.Writer, cmd.Key, cmd.Flags, cmd.Exptime, uint32(len(cmd.Data)), 0); err != nil {
+	if err := binprot.WriteSetCmd(h.Rw.Writer, cmd.Key, cmd.Flags, cmd.Exptime, uint32(len(cmd.Data)), 0); err != nil {
 		return err
 	}
 	return h.handleSetCommon(cmd)
@@ -70,7 +70,7 @@ func (h Handler) Set(cmd common.SetRequest) error {
 
 // Add performs an add request on the remote backend
 func (h Handler) Add(cmd common.SetRequest) error {
-	if err := binprot.WriteAddCmd(h.rw.Writer, cmd.Key, cmd.Flags, cmd.Exptime, uint32(len(cmd.Data)), 0); err != nil {
+	if err := binprot.WriteAddCmd(h.Rw.Writer, cmd.Key, cmd.Flags, cmd.Exptime, uint32(len(cmd.Data)), 0); err != nil {
 		return err
 	}
 	return h.handleSetCommon(cmd)
@@ -78,7 +78,7 @@ func (h Handler) Add(cmd common.SetRequest) error {
 
 // Replace performs a replace request on the remote backend
 func (h Handler) Replace(cmd common.SetRequest) error {
-	if err := binprot.WriteReplaceCmd(h.rw.Writer, cmd.Key, cmd.Flags, cmd.Exptime, uint32(len(cmd.Data)), 0); err != nil {
+	if err := binprot.WriteReplaceCmd(h.Rw.Writer, cmd.Key, cmd.Flags, cmd.Exptime, uint32(len(cmd.Data)), 0); err != nil {
 		return err
 	}
 	return h.handleSetCommon(cmd)
@@ -86,7 +86,7 @@ func (h Handler) Replace(cmd common.SetRequest) error {
 
 // Append performs an append request on the remote backend
 func (h Handler) Append(cmd common.SetRequest) error {
-	if err := binprot.WriteAppendCmd(h.rw.Writer, cmd.Key, cmd.Flags, cmd.Exptime, uint32(len(cmd.Data)), 0); err != nil {
+	if err := binprot.WriteAppendCmd(h.Rw.Writer, cmd.Key, cmd.Flags, cmd.Exptime, uint32(len(cmd.Data)), 0); err != nil {
 		return err
 	}
 	return h.handleSetCommon(cmd)
@@ -94,7 +94,7 @@ func (h Handler) Append(cmd common.SetRequest) error {
 
 // Prepend performs a prepend request on the remote backend
 func (h Handler) Prepend(cmd common.SetRequest) error {
-	if err := binprot.WritePrependCmd(h.rw.Writer, cmd.Key, cmd.Flags, cmd.Exptime, uint32(len(cmd.Data)), 0); err != nil {
+	if err := binprot.WritePrependCmd(h.Rw.Writer, cmd.Key, cmd.Flags, cmd.Exptime, uint32(len(cmd.Data)), 0); err != nil {
 		return err
 	}
 	return h.handleSetCommon(cmd)
@@ -104,18 +104,18 @@ func (h Handler) handleSetCommon(cmd common.SetRequest) error {
 	// TODO: should there be a unique flags value for regular data?
 
 	// Write value
-	h.rw.Write(cmd.Data)
+	h.Rw.Write(cmd.Data)
 	metrics.IncCounterBy(common.MetricBytesWrittenLocal, uint64(len(cmd.Data)))
 
-	if err := h.rw.Flush(); err != nil {
+	if err := h.Rw.Flush(); err != nil {
 		return err
 	}
 
 	// Read server's response
-	resHeader, err := readResponseHeader(h.rw.Reader)
+	resHeader, err := readResponseHeader(h.Rw.Reader)
 	if err != nil {
 		// Discard response body
-		n, ioerr := h.rw.Discard(int(resHeader.TotalBodyLength))
+		n, ioerr := h.Rw.Discard(int(resHeader.TotalBodyLength))
 		metrics.IncCounterBy(common.MetricBytesReadLocal, uint64(n))
 		if ioerr != nil {
 			return ioerr
@@ -137,7 +137,7 @@ func (h Handler) handleSetCommon(cmd common.SetRequest) error {
 func (h Handler) Get(cmd common.GetRequest) (<-chan common.GetResponse, <-chan error) {
 	dataOut := make(chan common.GetResponse)
 	errorOut := make(chan error)
-	go realHandleGet(cmd, dataOut, errorOut, h.rw)
+	go realHandleGet(cmd, dataOut, errorOut, h.Rw)
 	return dataOut, errorOut
 }
 
@@ -151,7 +151,7 @@ func realHandleGet(cmd common.GetRequest, dataOut chan common.GetResponse, error
 			return
 		}
 
-		data, flags, _, err := getLocal(rw, false)
+		data, flags, _, err := GetLocal(rw, false)
 		if err != nil {
 			if err == common.ErrKeyNotFound {
 				dataOut <- common.GetResponse{
@@ -187,7 +187,7 @@ func realHandleGet(cmd common.GetRequest, dataOut chan common.GetResponse, error
 func (h Handler) GetE(cmd common.GetRequest) (<-chan common.GetEResponse, <-chan error) {
 	dataOut := make(chan common.GetEResponse)
 	errorOut := make(chan error)
-	go realHandleGetE(cmd, dataOut, errorOut, h.rw)
+	go realHandleGetE(cmd, dataOut, errorOut, h.Rw)
 	return dataOut, errorOut
 }
 
@@ -201,7 +201,7 @@ func realHandleGetE(cmd common.GetRequest, dataOut chan common.GetEResponse, err
 			return
 		}
 
-		data, flags, exp, err := getLocal(rw, true)
+		data, flags, exp, err := GetLocal(rw, true)
 		if err != nil {
 			if err == common.ErrKeyNotFound {
 				dataOut <- common.GetEResponse{
@@ -235,11 +235,11 @@ func realHandleGetE(cmd common.GetRequest, dataOut chan common.GetEResponse, err
 
 // GAT performs a get-and-touch request on the remote backend
 func (h Handler) GAT(cmd common.GATRequest) (common.GetResponse, error) {
-	if err := binprot.WriteGATCmd(h.rw.Writer, cmd.Key, cmd.Exptime, 0); err != nil {
+	if err := binprot.WriteGATCmd(h.Rw.Writer, cmd.Key, cmd.Exptime, 0); err != nil {
 		return common.GetResponse{}, err
 	}
 
-	data, flags, _, err := getLocal(h.rw, false)
+	data, flags, _, err := GetLocal(h.Rw, false)
 	if err != nil {
 		if err == common.ErrKeyNotFound {
 			return common.GetResponse{
@@ -267,16 +267,16 @@ func (h Handler) GAT(cmd common.GATRequest) (common.GetResponse, error) {
 
 // Delete performs a delete request on the remote backend
 func (h Handler) Delete(cmd common.DeleteRequest) error {
-	if err := binprot.WriteDeleteCmd(h.rw.Writer, cmd.Key, 0); err != nil {
+	if err := binprot.WriteDeleteCmd(h.Rw.Writer, cmd.Key, 0); err != nil {
 		return err
 	}
-	return simpleCmdLocal(h.rw)
+	return simpleCmdLocal(h.Rw)
 }
 
 // Touch performs a touch request on the remote backend
 func (h Handler) Touch(cmd common.TouchRequest) error {
-	if err := binprot.WriteTouchCmd(h.rw.Writer, cmd.Key, cmd.Exptime, 0); err != nil {
+	if err := binprot.WriteTouchCmd(h.Rw.Writer, cmd.Key, cmd.Exptime, 0); err != nil {
 		return err
 	}
-	return simpleCmdLocal(h.rw)
+	return simpleCmdLocal(h.Rw)
 }
