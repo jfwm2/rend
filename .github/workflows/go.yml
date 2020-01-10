@@ -8,7 +8,7 @@ jobs:
     steps:
       - name: Build
         run: |
-          docker build -t criteord/memcached_proxy .
+          docker build -t memcached_proxy .
         
       - uses: actions/upload-artifact@v1
         with:
