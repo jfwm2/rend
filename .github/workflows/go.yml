@@ -9,7 +9,6 @@ jobs:
       - name: Build
         run: |
           docker build -t criteord/memcached_proxy .
-          docker run --rm -v $(pwd):/data criteord/memcached_proxy /bin/cp memcached_cluster_proxy /data
         
       - uses: actions/upload-artifact@v1
         with:
