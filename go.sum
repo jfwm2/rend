@@ -215,8 +215,12 @@ gopkg.in/check.v1 v0.0.0-20161208181325-20d25e280405/go.mod h1:Co6ibVJAznAaIkqp8
 gopkg.in/check.v1 v1.0.0-20180628173108-788fd7840127/go.mod h1:Co6ibVJAznAaIkqp8huTwlJQCZ016jof/cbN4VW5Yz0=
 gopkg.in/couchbase/gocb.v1 v1.6.4 h1:vAworfH5ZKDbonmayrwbGiD9jkAMroWmHXDf1GAIqMM=
 gopkg.in/couchbase/gocb.v1 v1.6.4/go.mod h1:Ri5Qok4ZKiwmPr75YxZ0uELQy45XJgUSzeUnK806gTY=
+gopkg.in/couchbase/gocb.v1 v1.6.5 h1:rqThkXzJUysaudn9+Zd9yKeakJu9uoh83vEWBN4obwI=
+gopkg.in/couchbase/gocb.v1 v1.6.5/go.mod h1:Ri5Qok4ZKiwmPr75YxZ0uELQy45XJgUSzeUnK806gTY=
 gopkg.in/couchbase/gocbcore.v7 v7.1.15 h1:2nhfrqKz6TBex0Vcc+iq9UnAZltfCGklnM4mgdf2I3o=
 gopkg.in/couchbase/gocbcore.v7 v7.1.15/go.mod h1:48d2Be0MxRtsyuvn+mWzqmoGUG9uA00ghopzOs148/E=
+gopkg.in/couchbase/gocbcore.v7 v7.1.16 h1:n2foZ0Lg2ooBhgzgIpIxQ7VmlUbL6x0GwrP0GQcmTYo=
+gopkg.in/couchbase/gocbcore.v7 v7.1.16/go.mod h1:48d2Be0MxRtsyuvn+mWzqmoGUG9uA00ghopzOs148/E=
 gopkg.in/couchbaselabs/gocbconnstr.v1 v1.0.4 h1:VVVoIV/nSw1w9ZnTEOjmkeJVcAzaCyxEujKglarxz7U=
 gopkg.in/couchbaselabs/gocbconnstr.v1 v1.0.4/go.mod h1:ZjII0iKx4Veo6N6da+pEZu/ptNyKLg9QTVt7fFmR6sw=
 gopkg.in/couchbaselabs/gojcbmock.v1 v1.0.3 h1:7n5tht07rEuogME6fmi6FVglIAUFD8m4t8ZQbnUq0sA=
