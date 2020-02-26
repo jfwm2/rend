@@ -118,8 +118,13 @@ func main() {
 	sourceCluster := newHandlerFromConfig(srcType, srcHostnames, srcClusterName, srcClusterDC, srcBucketName)
 	backfillCluster := newHandlerFromConfig(dstType, dstHostnames, dstClusterName, dstClusterDC, dstBucketName)
 
-	log.Printf("Starting Rend (backfill mode) on port %d", listenPort)
-	go server.ListenAndServe(l, protocols, server.Default, orcas.Backfill, sourceCluster, backfillCluster)
+	if dstType == "noop" {
+		log.Printf("Starting Rend (in GET forwarder mode) on port %d", listenPort)
+		go server.ListenAndServe(l, protocols, server.Default, orcas.L1OnlyForwardGet, sourceCluster, backfillCluster)
+	} else {
+		log.Printf("Starting Rend (backfill mode) on port %d", listenPort)
+		go server.ListenAndServe(l, protocols, server.Default, orcas.Backfill, sourceCluster, backfillCluster)
+	}
 
 	// Block forever
 	wg := sync.WaitGroup{}
