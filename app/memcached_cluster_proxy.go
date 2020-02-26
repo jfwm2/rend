@@ -85,24 +85,29 @@ func newHandlerFromConfig(clusterType string, hostnames string, clusterName stri
 	} else {
 		var err error
 		instances, err = consul.GetNodes(clusterName, consulAddr, dc)
+		log.Printf("%s", instances)
 		if err != nil {
 			log.Fatalf("Error: couldn't fetch service from Consul: %s", err)
 		}
 	}
 
-	if len(instances) <= 0 || len(instances[0]) <= 0 {
-		log.Fatalf("Error: Cannot create a cluster (cluster: %s) of 0 nodes", clusterName)
-	}
-
 	switch clusterType {
 	case "memcached":
+		if len(instances) <= 0 || len(instances[0]) <= 0 {
+			log.Fatalf("Error: Cannot create a cluster (cluster: %s) of 0 nodes", clusterName)
+		}
 		return memcached.Cluster(instances, clusterName)
 	case "couchbase":
+		if len(instances) <= 0 || len(instances[0]) <= 0 {
+			log.Fatalf("Error: Cannot create a cluster (cluster: %s) of 0 nodes", clusterName)
+		}
 		return couchbase.NewHandlerConst(instances[0], bucket)
+	case "noop":
+		return handlers.NilHandler
 	default:
 		log.Fatalf("Cluster type unsupported: %s", clusterType)
+		return nil
 	}
-	return nil
 }
 
 // And away we go
