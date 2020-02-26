@@ -26,7 +26,10 @@ import (
 	"github.com/netflix/rend/metrics"
 )
 
-const VersionString = "Rend 0.1"
+const (
+	Version       = "0.1"
+	VersionString = "Rend  " + Version
+)
 
 // Common metrics used across packages
 var (
@@ -131,6 +134,9 @@ const (
 
 	// RequestVersion replies with a string designating the current software version
 	RequestVersion
+
+	// RequestStat replies with a string designating of common stats
+	RequestStat
 )
 
 type Request interface {
@@ -269,6 +275,20 @@ func (r VersionRequest) GetOpaque() uint32 {
 }
 
 func (r VersionRequest) IsQuiet() bool {
+	return false
+}
+
+// StatRequest corresponds to common.RequestStat. It contains all the information required to
+// fulfill a stat request.
+type StatRequest struct {
+	Opaque uint32
+}
+
+func (r StatRequest) GetOpaque() uint32 {
+	return r.Opaque
+}
+
+func (r StatRequest) IsQuiet() bool {
 	return false
 }
 

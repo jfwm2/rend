@@ -341,3 +341,7 @@ func (l *LockedOrca) Unknown(req common.Request) error {
 func (l *LockedOrca) Error(req common.Request, reqType common.RequestType, err error) {
 	l.wrapped.Error(req, reqType, err)
 }
+
+func (l *LockedOrca) Stat(req common.StatRequest) error {
+	return l.wrapped.Stat(req)
+}

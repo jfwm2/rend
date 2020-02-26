@@ -717,3 +717,7 @@ func (l *L1L2BatchOrca) Error(req common.Request, reqType common.RequestType, er
 
 	l.res.Error(opaque, reqType, err, quiet)
 }
+
+func (l *L1L2BatchOrca) Stat(req common.StatRequest) error {
+	return l.res.Stat(req.Opaque)
+}

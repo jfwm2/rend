@@ -904,3 +904,7 @@ func (l *L1L2Orca) Error(req common.Request, reqType common.RequestType, err err
 
 	l.res.Error(opaque, reqType, err, quiet)
 }
+
+func (l *L1L2Orca) Stat(req common.StatRequest) error {
+	return l.res.Stat(req.Opaque)
+}

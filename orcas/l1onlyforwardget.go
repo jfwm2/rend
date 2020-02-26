@@ -140,3 +140,6 @@ func (l *L1OnlyForwardGetOrca) Touch(req common.TouchRequest) error             
 func (l *L1OnlyForwardGetOrca) GetE(req common.GetRequest) error                                { return common.ErrNoError }
 func (l *L1OnlyForwardGetOrca) Gat(req common.GATRequest) error                                 { return common.ErrNoError }
 
+func (l *L1OnlyForwardGetOrca) Stat(req common.StatRequest) error {
+	return l.res.Stat(req.Opaque)
+}

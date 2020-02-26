@@ -43,6 +43,8 @@ func (t testPanicOrca) Noop(req common.NoopRequest) error       { panic("test") 
 func (t testPanicOrca) Quit(req common.QuitRequest) error       { panic("test") }
 func (t testPanicOrca) Version(req common.VersionRequest) error { panic("test") }
 func (t testPanicOrca) Unknown(req common.Request) error        { panic("test") }
+func (t testPanicOrca) Stat(req common.StatRequest) error        { panic("test") }
+
 
 func (t testPanicOrca) Error(req common.Request, reqType common.RequestType, err error) {}
 

@@ -79,3 +79,6 @@ func (l *BackfillOrca) Quit(req common.QuitRequest) error                       
 func (l *BackfillOrca) Version(req common.VersionRequest) error                         { return common.ErrNoError }
 func (l *BackfillOrca) Unknown(req common.Request) error                                { return common.ErrNoError }
 func (l *BackfillOrca) Error(req common.Request, reqType common.RequestType, err error) {}
+func (l *BackfillOrca) Stat(req common.StatRequest) error {
+	return l.res.Stat(req.Opaque)
+}

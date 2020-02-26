@@ -243,3 +243,7 @@ func (l *L1OnlyCassandraOrca) Error(req common.Request, reqType common.RequestTy
 
 	l.res.Error(opaque, reqType, err, quiet)
 }
+
+func (l *L1OnlyCassandraOrca) Stat(req common.StatRequest) error {
+	return l.res.Stat(req.Opaque)
+}
