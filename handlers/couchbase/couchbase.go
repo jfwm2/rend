@@ -43,7 +43,7 @@ func (c *couchbaseClient) set(key []byte, data []byte, exptime uint32) error {
 }
 
 func NewHandler(clusterAddr string, bucketName string) (Handler, error) {
-	cluster, err := gocb.Connect("couchbase://" + clusterAddr)
+	cluster, err := gocb.Connect("http://" + clusterAddr)
 	if err != nil {
 		return Handler{}, err
 	}
