@@ -4,6 +4,7 @@ import (
 	"errors"
 
 	"github.com/netflix/rend/common"
+	"sync"
 	"github.com/netflix/rend/handlers"
 	gocb "gopkg.in/couchbase/gocb.v1"
 )
@@ -24,6 +25,7 @@ type clientWrapper interface {
 
 type couchbaseClient struct {
 	client *gocb.Bucket
+	mux sync.Mutex
 }
 
 func (c *couchbaseClient) close() error {
@@ -33,17 +35,21 @@ func (c *couchbaseClient) close() error {
 func (c *couchbaseClient) get(key []byte, data *[]byte) error {
 	// TODO: may have to check https://github.com/golang/go/issues/25484
 	// if string conversion is a perf bottleneck
-	_, err := c.client.Get(string(key), data)
+	c.mux.Lock()
+	defer c.mux.Unlock()
+	_ , err := c.client.Get(string(key), data)
 	return err
 }
 
 func (c *couchbaseClient) set(key []byte, data []byte, exptime uint32) error {
+	c.mux.Lock()
+	defer c.mux.Unlock()
 	_, err := c.client.Upsert(string(key), data, exptime)
 	return err
 }
 
 func NewHandler(clusterAddr string, bucketName string) (Handler, error) {
-	cluster, err := gocb.Connect("http://" + clusterAddr)
+	cluster, err := gocb.Connect("http://" + clusterAddr + "?compression=false")
 	if err != nil {
 		return Handler{}, err
 	}
