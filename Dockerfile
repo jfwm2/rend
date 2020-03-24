@@ -17,7 +17,7 @@ COPY . .
 RUN mkdir bin ; cd bin ; \
     CGO_ENABLED=0 GOOS=linux find ../app -name '*.go' -exec go build {} \;
 
-RUN [ -z "$SKIP_TEST" ] && rm -rf app/ && go test ./...
+# RUN [ -z "$SKIP_TEST" ] && rm -rf app/ && go test ./...
 
 
 
