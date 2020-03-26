@@ -59,7 +59,20 @@ func TestCustomRawBinaryTranscoderDecodeUnsupportedType(t *testing.T) {
 	}
 }
 
-func TestCustomRawBinaryTranscoderEncodeByte(t *testing.T) {
+// Since it is not intended to write to couchbase at the present time, the CustomRawBinaryTranscoder
+// Encode method is disabled as a defensive programming action until it could be tested and validated.
+
+// The test below can be remove if we decide to enable he CustomRawBinaryTranscoder Encode method
+func TestCustomRawBinaryTranscoderEncodeErrorAlways(t *testing.T) {
+	_, _, err := transcoder.Encode(in)
+
+	if err == nil {
+		t.Error("Error is nil; want \"to raise an error with unsupported type\"")
+	}
+}
+
+// Testing of the disabled capabilities of the CustomRawBinaryTranscoder Encode method below is being commented.
+/*func TestCustomRawBinaryTranscoderEncodeByte(t *testing.T) {
 	out, typeCode, err := transcoder.Encode(in)
 
 	if err != nil {
@@ -108,10 +121,9 @@ func TestCustomRawBinaryTranscoderEncodeStringPointer(t *testing.T) {
 }
 
 func TestCustomRawBinaryTranscoderEncodeUnsupported(t *testing.T) {
-	transcoder := CustomRawBinaryTranscoder{}
 	_, _, err := transcoder.Encode([]int8{1,2,3})
 
 	if err == nil {
 		t.Error("Error is nil; want \"to raise an error with unsupported type\"")
 	}
-}
+}*/

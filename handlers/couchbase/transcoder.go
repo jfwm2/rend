@@ -23,6 +23,11 @@ func (t CustomRawBinaryTranscoder) Decode(bytes []byte, flags uint32, out interf
 }
 
 func (t CustomRawBinaryTranscoder) Encode(value interface{}) ([]byte, uint32, error) {
+	// Since it is not intended to write to couchbase at the present time, the CustomRawBinaryTranscoder
+	// Encode method is disabled as a defensive programming action until it could be tested and validated.
+	return nil, customRawBinaryTypeCode,
+		errors.New("encoding is disabled for CustomRawBinaryTranscoder")
+	/*
 	var bytes []byte
 
 	switch typeValue := value.(type) {
@@ -39,5 +44,5 @@ func (t CustomRawBinaryTranscoder) Encode(value interface{}) ([]byte, uint32, er
 			errors.New("raw binary custom format must be encoded from a byte array or string")
 	}
 
-	return bytes, customRawBinaryTypeCode, nil
+	return bytes, customRawBinaryTypeCode, nil*/
 }
