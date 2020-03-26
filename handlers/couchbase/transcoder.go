@@ -36,8 +36,9 @@ func (t CustomRawBinaryTranscoder) Encode(value interface{}) ([]byte, uint32, er
 		bytes = []byte(*typeValue)
 	default:
 		return nil, customRawBinaryTypeCode,
-			errors.New("raw binary custom format must be encoded from a byte array or interface")
+			errors.New("raw binary custom format must be encoded from a byte array or string")
 	}
 
 	return bytes, customRawBinaryTypeCode, nil
 }
+

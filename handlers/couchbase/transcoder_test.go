@@ -6,6 +6,9 @@ import (
 	"testing"
 )
 
+var input = "ABC€"
+var in = []byte(input)
+var transcoder = CustomRawBinaryTranscoder{}
 
 // checks if two bytes arrays are the same
 func testEq(a, b []byte) bool {
@@ -24,10 +27,7 @@ func testEq(a, b []byte) bool {
 }
 
 func TestCustomRawBinaryTranscoderDecodeToByteArray(t *testing.T) {
-	transcoder := CustomRawBinaryTranscoder{}
-	input := "ABC€"
-	in := []byte(input)
-	flags := rand.Uint32(); //random uint32
+	flags := rand.Uint32()	//random uint32
 	var out []byte
 	err := transcoder.Decode(in, flags, &out)
 
@@ -39,10 +39,7 @@ func TestCustomRawBinaryTranscoderDecodeToByteArray(t *testing.T) {
 }
 
 func TestCustomRawBinaryTranscoderDecodeToString(t *testing.T) {
-	transcoder := CustomRawBinaryTranscoder{}
-	input := "ABC€"
-	in := []byte(input)
-	flags := rand.Uint32(); //random uint32
+	flags := rand.Uint32()	//random uint32
 	var out string
 	err := transcoder.Decode(in, flags, &out)
 
@@ -50,5 +47,62 @@ func TestCustomRawBinaryTranscoderDecodeToString(t *testing.T) {
 		t.Errorf("Error is \"%v\"; want nil", err)
 	} else if input != fmt.Sprintf("%v", out) {
 		t.Errorf("out is \"%v\"; want \"%v\"", out, input)
+	}
+}
+
+func TestCustomRawBinaryTranscoderEncodeByte(t *testing.T) {
+	out, typeCode, err := transcoder.Encode(in)
+
+	if err != nil {
+		t.Errorf("Error is \"%v\"; want nil", err)
+	} else if typeCode != customRawBinaryTypeCode {
+		t.Errorf("typeCode is is %v; want %v", typeCode, customRawBinaryTypeCode)
+	} else if !testEq(in, out) {
+		t.Errorf("out is %v; want %v", out, in)
+	}
+}
+
+func TestCustomRawBinaryTranscoderEncodeBytePointer(t *testing.T) {
+	out, typeCode, err := transcoder.Encode(&in)
+
+	if err != nil {
+		t.Errorf("Error is \"%v\"; want nil", err)
+	} else if typeCode != customRawBinaryTypeCode {
+		t.Errorf("typeCode is is %v; want %v", typeCode, customRawBinaryTypeCode)
+	} else if !testEq(in, out) {
+		t.Errorf("out is %v; want %v", out, in)
+	}
+}
+
+func TestCustomRawBinaryTranscoderEncodeString(t *testing.T) {
+	out, typeCode, err := transcoder.Encode(input)
+
+	if err != nil {
+		t.Errorf("Error is \"%v\"; want nil", err)
+	} else if typeCode != customRawBinaryTypeCode {
+		t.Errorf("typeCode is is %v; want %v", typeCode, customRawBinaryTypeCode)
+	} else if !testEq(in, out) {
+		t.Errorf("out is %v; want %v", out, in)
+	}
+}
+
+func TestCustomRawBinaryTranscoderEncodeStringPointer(t *testing.T) {
+	out, typeCode, err := transcoder.Encode(&input)
+
+	if err != nil {
+		t.Errorf("Error is \"%v\"; want nil", err)
+	} else if typeCode != customRawBinaryTypeCode {
+		t.Errorf("typeCode is is %v; want %v", typeCode, customRawBinaryTypeCode)
+	} else if !testEq(in, out) {
+		t.Errorf("out is %v; want %v", out, in)
+	}
+}
+
+func TestCustomRawBinaryTranscoderEncodeUnsupported(t *testing.T) {
+	transcoder := CustomRawBinaryTranscoder{}
+	_, _, err := transcoder.Encode([]int8{1,2,3})
+
+	if err == nil {
+		t.Error("Error is nil; want \"to raise an error with unsupported type\"")
 	}
 }
