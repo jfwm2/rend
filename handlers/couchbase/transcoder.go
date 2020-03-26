@@ -41,4 +41,3 @@ func (t CustomRawBinaryTranscoder) Encode(value interface{}) ([]byte, uint32, er
 
 	return bytes, customRawBinaryTypeCode, nil
 }
-
