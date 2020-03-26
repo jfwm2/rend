@@ -49,6 +49,15 @@ func TestCustomRawBinaryTranscoderDecodeToString(t *testing.T) {
 		t.Errorf("out is \"%v\"; want \"%v\"", out, input)
 	}
 }
+func TestCustomRawBinaryTranscoderDecodeUnsupportedType(t *testing.T) {
+	flags := rand.Uint32()	//random uint32
+	var out []int8
+	err := transcoder.Decode(in, flags, &out)
+
+	if err == nil {
+		t.Error("Error is nil; want \"to raise an error with unsupported type\"")
+	}
+}
 
 func TestCustomRawBinaryTranscoderEncodeByte(t *testing.T) {
 	out, typeCode, err := transcoder.Encode(in)
