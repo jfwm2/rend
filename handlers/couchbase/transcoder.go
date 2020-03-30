@@ -2,6 +2,7 @@ package couchbase
 
 import (
 	"errors"
+	"log"
 )
 
 const customRawBinaryTypeCode = 0x4352544f
@@ -10,6 +11,7 @@ type CustomRawBinaryTranscoder struct {
 }
 
 func (t CustomRawBinaryTranscoder) Decode(bytes []byte, flags uint32, out interface{}) error {
+	log.Printf("Decoding %q, with flags %X", bytes, flags)
 	switch typedOut := out.(type) {
 	case *[]byte:
 		*typedOut = bytes

@@ -2,6 +2,8 @@ package couchbase
 
 import (
 	"errors"
+	"fmt"
+	"log"
 
 	"github.com/netflix/rend/common"
 	"github.com/netflix/rend/handlers"
@@ -33,7 +35,12 @@ func (c *couchbaseClient) close() error {
 func (c *couchbaseClient) get(key []byte, data *[]byte) error {
 	// TODO: may have to check https://github.com/golang/go/issues/25484
 	// if string conversion is a perf bottleneck
+	if fmt.Sprintf("%s", key) == "********" {
+		return errors.New("no mempoke request allowed")
+	}
+	log.Printf("Before Get %q",key)
 	_, err := c.client.Get(string(key), data)
+	log.Printf("After Get %q: %q", key, data)
 	return err
 }
 
